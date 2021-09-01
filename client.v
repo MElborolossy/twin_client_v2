@@ -1,11 +1,11 @@
 module twin_client_v2
-import threefoldtech.rmb.client
+import threefoldtech.rmb.twinclient { TwinClient, new }
 
 pub struct Client{
-	client.MessageBusClient
+	TwinClient
 }
 
-pub fn new (redis_server string, twin_dist []int) ?Client {
+pub fn init (redis_server string, twin_dist int) ?Client {
 	/*
 		Create a new Client isntance
 		Inputs:
@@ -14,5 +14,5 @@ pub fn new (redis_server string, twin_dist []int) ?Client {
 		Output:
 			- Client: new Client instance
 	*/
-	return Client{client.new(redis_server, twin_dist) ?}
+	return Client{new(redis_server, twin_dist) ?}
 }

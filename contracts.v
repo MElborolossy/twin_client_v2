@@ -23,37 +23,58 @@ pub fn (mut mb Client) create_contract (node_id u32, hash string, data string, p
 	/*
 		Create new contract
 		Input:
-			- node_id (u32): zos node id 
-			- hash (string): deployment challenge hash 
+			- node_id (u32): zos node id
+			- hash (string): deployment challenge hash
 			- data (string): deployment data
 			- public_ip (u32): number of public IPs
 		Output:
 			- Contract: new Contract instance with all contract info.
 	*/
-	mut msg := mb.send("twinserver.contracts.create", '{"node_id": $node_id, "hash": $hash, "data": $data, "public_ip": $public_ip}') ?
+	mut msg := mb.send("twinserver.contracts.create", '{"node_id": $node_id, "hash": "$hash", "data": "$data", "public_ip": $public_ip}') ?
 	response := mb.read(msg)
 	println("--------- Create Contract Response ---------")
 	println(response)
-	return json.decode(Contract, response[0].data)
+	return json.decode(Contract, response.data)
 }
 
-pub fn (mut mb Client) get_contract (id int) ?Contract {
+pub fn (mut mb Client) get_contract (id u32) ?Contract {
+	/*
+		Get contract info with id
+		Input:
+			- id: contract id
+		Output:
+			- Contract: Contract instance with all contract info.
+	*/
 	mut msg := mb.send("twinserver.contracts.get", '{"id": $id}') ?
 	response := mb.read(msg)
 	println("--------- Get Contract Response ---------")
 	println(response)
-	return json.decode(Contract, response[0].data)
+	return json.decode(Contract, response.data)
 }
 
 pub fn (mut mb Client) update_contract (id int, hash string, data string) ?Contract {
-	mut msg := mb.send("twinserver.contracts.update", '{"id": $id, "hash": $hash, "data": $data}') ?
+	/*
+		Update contract hash and data using contract id
+		Input:
+			- id: contract id
+			- hash: new deployment challenge hash
+			- date: new deployment data
+		Output:
+			- Contract: Contract instance with all contract info after update.
+	*/
+	mut msg := mb.send("twinserver.contracts.update", '{"id": $id, "hash": "$hash", "data": "$data"}') ?
 	response := mb.read(msg)
 	println("--------- Update Contract Response ---------")
 	println(response)
-	return json.decode(Contract, response[0].data)
+	return json.decode(Contract, response.data)
 }
 
 pub fn (mut mb Client) cancel_contract (id int) ? {
+	/*
+		Cancel contract
+		Input:
+			- id: contract id
+	*/
 	mut msg :=  mb.send("twinserver.contracts.cancel", '{"id": $id}') ?
 	response := mb.read(msg)
 	println("--------- Get Contract Response ---------")

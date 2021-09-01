@@ -1,4 +1,4 @@
-{ // --------- Get Twin Response ---------
+{
     "twin":{
         "version": 1,
         "id": 49,
