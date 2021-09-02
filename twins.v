@@ -26,8 +26,6 @@ pub fn (mut tw Client) create_twin (ip string) ?Twin {
 
 	mut msg := tw.send("twinserver.twins.create", '{"ip": "$ip"}') ?
 	response := tw.read(msg)
-	println("--------- Create Twin Response ---------")
-	println(response)
 	return json.decode(Twin, response.data)
 }
 
@@ -41,9 +39,7 @@ pub fn (mut tw Client) get_twin (id u32) ?Twin {
 	*/
 	mut msg := tw.send("twinserver.twins.get", '{"id": $id}') ?
 	response := tw.read(msg)
-	println("--------- Get Twin Response ---------")
 	// {"version":1,"id":49,"account_id":"5D2etsCt37ucdTvybV8PaeQzmoUsNp7RzxZQGJosmY8PUvKQ","ip":"201:e709:df8b:b04:6125:1ced:c211:a404","entities":[]}
-	println(response)
 	return json.decode(Twin, response.data)
 }
 
@@ -55,12 +51,10 @@ pub fn (mut tw Client) list_twins () ?[]Twin {
 	*/
 	mut msg := tw.send("twinserver.twins.list", '{}') ?
 	response := tw.read(msg)
-	println("--------- List Twin Response ---------")
-	println(response)
 	return json.decode([]Twin, response.data)
 }
 
-pub fn (mut tw Client) delete_twin (id u32) ? {
+pub fn (mut tw Client) delete_twin (id u32) ?u32 {
 	/*
 		Delete twin
 		Input:
@@ -68,6 +62,5 @@ pub fn (mut tw Client) delete_twin (id u32) ? {
 	*/
 	mut msg := tw.send("twinserver.twins.delete", '{"id": $id}') ?
 	response := tw.read(msg)
-	println("--------- Delete Twin Response ---------")
-	println(response)
+	return response.data.u32()
 }
