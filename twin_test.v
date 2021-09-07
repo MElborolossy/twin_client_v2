@@ -3,8 +3,9 @@ import twin_client_v2 { init, Twin }
 const redis_server = "localhost:6379"
 
 pub fn test_twin(){
-	mut twin_dest :=  49
+	mut twin_dest :=  49 // ADD TWIN ID.
 	mut tw := init(redis_server, twin_dest) or {panic(err)}
+
 	// Create new twin
 	new_twin_ip := "ADD_YOUR_IPV6 ADDRESS HERE"
 	println("--------- Create Twin ---------")
@@ -26,6 +27,8 @@ pub fn test_twin(){
 	println(twins)
 
 	// Delete Twin
+	// TAKE CARE, YOUR TWIN WILL BE DELETED HERE
+	// COMMENT THIS PART IF YOU DON'T WANT TO DELETE IT
 	println("--------- Delete Twin ---------")
 	deleted_twin_id := tw.delete_twin(new_twin.id)
 	println("Twin [$deleted_twin_id] deleted")

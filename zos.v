@@ -1,14 +1,14 @@
 module twin_client_v2
 
-pub fn (mut mb Client) deploy(node_id u32, hash string, payload string) ? {
+pub fn (mut mb Client) deploy(payload string) ?Contract {
 	/*
-		{
-			node_id: zos node id
-			hash: deployment challenge hash
-			payload: zos payload
-		}
+		Deploy zos workload
+		Input:
+			- payload (string): zos payload + node_id + hash
+		Output:
+			- Contract: new Contract instance with all contract info.
 	*/
-	mut msg := mb.send("twinserver.zos.deploy", '{"node_id": $node_id, "hash": "$hash", "payload": $payload}')?
+	mut msg := mb.send("twinserver.zos.deploy", payload)?
 	response := mb.read(msg)
-	println(response)
+	return json.decode(Contract, response.data)
 }
