@@ -1,14 +1,16 @@
 module twin_client_v2
 
-pub fn (mut mb Client) deploy(payload string) ?Contract {
+import json
+
+pub fn (mut tw Client) deploy(payload string) ?Contract {
 	/*
-		Deploy zos workload
+	Deploy zos workload
 		Input:
-			- payload (string): zos payload + node_id + hash
+			- payload (string): zos payload + node_id
 		Output:
 			- Contract: new Contract instance with all contract info.
 	*/
-	mut msg := mb.send("twinserver.zos.deploy", payload)?
-	response := mb.read(msg)
-	return json.decode(Contract, response.data)
+	mut msg := tw.send('twinserver.zos.deploy', payload) ?
+	response := tw.read(msg)
+	return json.decode(Contract, response.data) or {}
 }
