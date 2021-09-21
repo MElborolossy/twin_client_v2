@@ -41,8 +41,8 @@ pub fn test_contract() {
 
 	// List My Contracts
 	println('--------- List Contracts ---------')
-	start := u64(1460)
-	end := u64(1480)
+	start := u64(1500) // START FROM --> CONTRACT ID
+	end := u64(1520) // END AT -- > CONTRACT ID
 	mut mycontracts := []Contract{}
 	mut con := Contract{}
 	for i in start .. end {
