@@ -72,33 +72,30 @@ pub fn (mut tw Client) get_machine(name string) ?[]zos.Deployment {
 	return json.decode([]zos.Deployment, response.data) or {}
 }
 
-// Not Working YET ---------------> TODO: CHECK LATER
-// pub fn (mut tw Client) update_machine(payload GenericMachine) ?GenericMachine {
-// 	/*
-// 	Update machine with payload.
-// 		Input:
-// 			- payload (GenericMachine): machine instance with modified data.
-// 		Output:
-// 			- GenericMachine: generic machine instance with updated info.
-// 	*/
-// 	payload_encoded := json.encode_pretty(payload)
-// 	return tw.update_machine_with_encoded_payload(payload_encoded)
-// }
+pub fn (mut tw Client) update_machine(payload GenericMachine) ?DeployResponse {
+	/*
+	Update machine with payload.
+		Input:
+			- payload (GenericMachine): machine instance with modified data.
+		Output:
+			- GenericMachine: generic machine instance with updated info.
+	*/
+	payload_encoded := json.encode_pretty(payload)
+	return tw.update_machine_with_encoded_payload(payload_encoded)
+}
 
-// pub fn (mut tw Client) update_machine_with_encoded_payload(payload_encoded string) ?GenericMachine {
-// 	/*
-// 	Get machine info using deployment name.
-// 		Input:
-// 			- payload_encoded (string): encoded payload with modified data.
-// 		Output:
-// 			- GenericMachine: generic machine instance with all machine info.
-// 	*/
-// 	mut msg := tw.send('twinserver.machine.update', payload_encoded) ?
-// 	response := tw.read(msg)
-// 	println('--------- Update Machine ---------')
-// 	println(response)
-// 	return json.decode(GenericMachine, response.data) or {}
-// }
+pub fn (mut tw Client) update_machine_with_encoded_payload(payload_encoded string) ?DeployResponse {
+	/*
+	Get machine info using deployment name.
+		Input:
+			- payload_encoded (string): encoded payload with modified data.
+		Output:
+			- GenericMachine: generic machine instance with all machine info.
+	*/
+	mut msg := tw.send('twinserver.machine.update', payload_encoded) ?
+	response := tw.read(msg)
+	return json.decode(DeployResponse, response.data) or {}
+}
 
 pub fn (mut tw Client) list_machines() ?[]string {
 	/*
