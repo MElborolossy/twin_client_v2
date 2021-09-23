@@ -40,7 +40,7 @@ pub fn (mut tw Client) deploy_machine(payload GenericMachine) ?DeployResponse {
 		Input:
 			- payload (GenericMachine): generic machine payload
 		Output:
-			- DeployResponse: new Contract instance and wireguard config.
+			- DeployResponse: list of contracts {created updated, deleted} and wireguard config.
 	*/
 	payload_encoded := json.encode_pretty(payload)
 	return tw.deploy_machine_with_encoded_payload(payload_encoded)
@@ -52,7 +52,7 @@ pub fn (mut tw Client) deploy_machine_with_encoded_payload(payload_encoded strin
 		Input:
 			- payload (string): generic machine encoded payload.
 		Output:
-			- DeployResponse: new Contract instance and wireguard config.
+			- DeployResponse: list of contracts {created updated, deleted} and wireguard config
 	*/
 	mut msg := tw.send('twinserver.machine.deploy', payload_encoded) ?
 	response := tw.read(msg)
@@ -65,7 +65,7 @@ pub fn (mut tw Client) get_machine(name string) ?[]zos.Deployment {
 		Input:
 			- name (string): Deployment name
 		Output:
-			- GenericMachine: generic machine instance with all machine info.
+			- Deployments: List of zos Deplyments
 	*/
 	mut msg := tw.send('twinserver.machine.get', '{"name": "$name"}') ?
 	response := tw.read(msg)
@@ -78,7 +78,7 @@ pub fn (mut tw Client) update_machine(payload GenericMachine) ?DeployResponse {
 		Input:
 			- payload (GenericMachine): machine instance with modified data.
 		Output:
-			- GenericMachine: generic machine instance with updated info.
+			- DeployResponse: list of contracts {created updated, deleted} and wireguard config
 	*/
 	payload_encoded := json.encode_pretty(payload)
 	return tw.update_machine_with_encoded_payload(payload_encoded)
@@ -90,7 +90,7 @@ pub fn (mut tw Client) update_machine_with_encoded_payload(payload_encoded strin
 		Input:
 			- payload_encoded (string): encoded payload with modified data.
 		Output:
-			- GenericMachine: generic machine instance with all machine info.
+			- DeployResponse: list of contracts {created updated, deleted} and wireguard config
 	*/
 	mut msg := tw.send('twinserver.machine.update', payload_encoded) ?
 	response := tw.read(msg)
@@ -101,7 +101,7 @@ pub fn (mut tw Client) list_machines() ?[]string {
 	/*
 	List all generic machines
 		Output:
-			- Deployments: Array of all current twins.
+			- machines: Array of all current machines name for specifc twin.
 	*/
 	mut msg := tw.send('twinserver.machine.list', '{}') ?
 	response := tw.read(msg)
@@ -114,7 +114,7 @@ pub fn (mut tw Client) delete_machine(name string) ?ContractDeployResponse {
 		Input:
 			- name (string): machine name.
 		Output:
-			- contract id.
+			- response: List of contracts {deleted}.
 	*/
 	mut msg := tw.send('twinserver.machine.delete', '{"name": "$name"}') ?
 	response := tw.read(msg)
