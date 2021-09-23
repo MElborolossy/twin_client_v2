@@ -30,7 +30,7 @@ pub fn (mut tw Client) deploy_zdbs(payload DeployZDBPayload) ?ContractDeployResp
 		Input:
 			- payload (DeployZDBPayload): zdb payload
 		Output:
-			- Contract: new Contract instance.
+			- response: List of contracts {created}.
 	*/
 	payload_encoded := json.encode_pretty(payload)
 	return tw.deploy_zdbs_with_encoded_payload(payload_encoded)
@@ -42,7 +42,7 @@ pub fn (mut tw Client) deploy_zdbs_with_encoded_payload(payload_encoded string) 
 		Input:
 			- payload (string): zdb encoded payload.
 		Output:
-			- Contract: new Contract instance.
+			- response: List of contracts {created}.
 	*/
 	mut msg := tw.send('twinserver.zdbs.deploy', payload_encoded) ?
 	response := tw.read(msg)
@@ -50,6 +50,14 @@ pub fn (mut tw Client) deploy_zdbs_with_encoded_payload(payload_encoded string) 
 }
 
 pub fn (mut tw Client) add_zdb(deployment_name string, zdb ZDB) ?ContractDeployResponse {
+	/*
+	Add new zdb to zdbs deployment
+		Input:
+			- deployment_name (string): Deployment name.
+			- zdb (Node): ZDB object contains new zdb info.
+		Output:
+			- DeployResponse: list of contracts {created updated, deleted} and wireguard config.
+	*/
 	mut add_payload := zdb
 	add_payload.deployment_name = deployment_name
 	payload_encoded := json.encode(add_payload)
@@ -59,6 +67,14 @@ pub fn (mut tw Client) add_zdb(deployment_name string, zdb ZDB) ?ContractDeployR
 }
 
 pub fn (mut tw Client) delete_zdb(deployment_name string, zdb_name string) ?ContractDeployResponse {
+	/*
+	Delete zdb from a zdbs deployment
+		Input:
+			- deployment_name (string): Deployment name.
+			- name (string): zdb name to delete.
+		Output:
+			- DeployResponse: list of contracts {created updated, deleted} and wireguard config.
+	*/
 	mut delete_payload := map[string]string{}
 	delete_payload = {
 		'deployment_name': deployment_name
@@ -76,7 +92,7 @@ pub fn (mut tw Client) get_zdbs(name string) ?[]zos.Deployment {
 		Input:
 			- name (string): Deployment name
 		Output:
-			- zdb: zdb instance with all zdb info.
+			- Deployments: List of all zos Deplyments related to zdbs deployment.
 	*/
 	mut msg := tw.send('twinserver.zdbs.get', '{"name": "$name"}') ?
 	response := tw.read(msg)
@@ -84,39 +100,38 @@ pub fn (mut tw Client) get_zdbs(name string) ?[]zos.Deployment {
 	return json.decode([]zos.Deployment, response.data) or {}
 }
 
-// Not Working YET ---------------> TODO: CHECK LATER
-// pub fn (mut tw Client) update_zdbs(payload DeployZDBPayload) ?DeployZDBPayload {
-// 	/*
-// 	Update zdb with payload.
-// 		Input:
-// 			- payload (DeployZDBPayload): zdb instance with modified data.
-// 		Output:
-// 			- DeployZDBPayload: zdb instance with updated info.
-// 	*/
-// 	payload_encoded := json.encode_pretty(payload)
-// 	return tw.update_zdbs_with_encoded_payload(payload_encoded)
-// }
+pub fn (mut tw Client) update_zdbs(payload DeployZDBPayload) ?ContractDeployResponse {
+	/*
+	Update zdb with payload.
+		Input:
+			- payload (DeployZDBPayload): zdb instance with modified data.
+		Output:
+			- response: List of contracts {updated}.
+	*/
+	payload_encoded := json.encode_pretty(payload)
+	return tw.update_zdbs_with_encoded_payload(payload_encoded)
+}
 
-// pub fn (mut tw Client) update_zdbs_with_encoded_payload(payload_encoded string) ?DeployZDBPayload {
-// 	/*
-// 	Get zdb info using deployment name.
-// 		Input:
-// 			- payload_encoded (string): encoded payload with modified data.
-// 		Output:
-// 			- DeployZDBPayload: zdb instance with updated info.
-// 	*/
-// 	mut msg := tw.send('twinserver.zdbs.update', payload_encoded) ?
-// 	response := tw.read(msg)
-// 	println('--------- Update ZDB ---------')
-// 	println(response)
-// 	return json.decode(DeployZDBPayload, response.data) or {}
-// }
+pub fn (mut tw Client) update_zdbs_with_encoded_payload(payload_encoded string) ?ContractDeployResponse {
+	/*
+	Get zdb info using deployment name.
+		Input:
+			- payload_encoded (string): encoded payload with modified data.
+		Output:
+			- response: List of contracts {created}.
+	*/
+	mut msg := tw.send('twinserver.zdbs.update', payload_encoded) ?
+	response := tw.read(msg)
+	println('--------- Update ZDB ---------')
+	println(response)
+	return json.decode(ContractDeployResponse, response.data) or {}
+}
 
 pub fn (mut tw Client) list_zdbs() ?[]string {
 	/*
 	List all zdbs
 		Output:
-			- Deployments: Array of all current zdbs.
+			- Deployments: Array of all current zdbs name for specifc twin.
 	*/
 	mut msg := tw.send('twinserver.zdbs.list', '{}') ?
 	response := tw.read(msg)
@@ -129,7 +144,7 @@ pub fn (mut tw Client) delete_zdbs(name string) ?ContractDeployResponse {
 		Input:
 			- name (string): zdb name.
 		Output:
-			- contract id.
+			- response: List of contracts {deleted}.
 	*/
 	mut msg := tw.send('twinserver.zdbs.delete', '{"name": "$name"}') ?
 	response := tw.read(msg)
