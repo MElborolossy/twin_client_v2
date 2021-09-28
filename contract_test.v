@@ -1,6 +1,4 @@
-import threefoldtech.twin_client_v2 { Contract, init }
-
-const redis_server = 'localhost:6379'
+module twinclient
 
 pub fn test_contract() {
 	mut twin_dest := 49 // ADD TWIN ID.

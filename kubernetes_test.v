@@ -1,6 +1,4 @@
-import threefoldtech.twin_client_v2 { K8S, Network, Node, init }
-
-const redis_server = 'localhost:6379'
+module twinclient
 
 pub fn test_generic_machine() {
 	mut twin_dest := 49 // ADD TWIN ID.

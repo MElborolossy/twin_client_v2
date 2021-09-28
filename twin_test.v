@@ -1,6 +1,4 @@
-import twin_client_v2 { Twin, init }
-
-const redis_server = 'localhost:6379'
+module twinclient
 
 pub fn test_twin() {
 	mut twin_dest := 49 // ADD TWIN ID.

@@ -1,9 +1,10 @@
-module twin_client_v2
+module twinclient
 
 import threefoldtech.info_specs_grid3.vlang.zos
 import json
 
 pub struct GenericMachine {
+pub:
 	node_id     u32
 	disks       []Disk
 	network     Network
@@ -56,6 +57,9 @@ pub fn (mut tw Client) deploy_machine_with_encoded_payload(payload_encoded strin
 	*/
 	mut msg := tw.send('twinserver.machine.deploy', payload_encoded) ?
 	response := tw.read(msg)
+	if response.err != ''{
+		return error(response.err)
+	}
 	return json.decode(DeployResponse, response.data) or {}
 }
 
@@ -69,6 +73,9 @@ pub fn (mut tw Client) get_machine(name string) ?[]zos.Deployment {
 	*/
 	mut msg := tw.send('twinserver.machine.get', '{"name": "$name"}') ?
 	response := tw.read(msg)
+	if response.err != ''{
+		return error(response.err)
+	}
 	return json.decode([]zos.Deployment, response.data) or {}
 }
 
@@ -94,6 +101,9 @@ pub fn (mut tw Client) update_machine_with_encoded_payload(payload_encoded strin
 	*/
 	mut msg := tw.send('twinserver.machine.update', payload_encoded) ?
 	response := tw.read(msg)
+	if response.err != ''{
+		return error(response.err)
+	}
 	return json.decode(DeployResponse, response.data) or {}
 }
 
@@ -105,6 +115,9 @@ pub fn (mut tw Client) list_machines() ?[]string {
 	*/
 	mut msg := tw.send('twinserver.machine.list', '{}') ?
 	response := tw.read(msg)
+	if response.err != ''{
+		return error(response.err)
+	}
 	return json.decode([]string, response.data) or {}
 }
 
@@ -118,5 +131,8 @@ pub fn (mut tw Client) delete_machine(name string) ?ContractDeployResponse {
 	*/
 	mut msg := tw.send('twinserver.machine.delete', '{"name": "$name"}') ?
 	response := tw.read(msg)
+	if response.err != ''{
+		return error(response.err)
+	}
 	return json.decode(ContractDeployResponse, response.data) or {}
 }

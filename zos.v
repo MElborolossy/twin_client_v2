@@ -1,4 +1,4 @@
-module twin_client_v2
+module twinclient
 
 import json
 
@@ -12,5 +12,8 @@ pub fn (mut tw Client) deploy(payload string) ?Contract {
 	*/
 	mut msg := tw.send('twinserver.zos.deploy', payload) ?
 	response := tw.read(msg)
+	if response.err != ''{
+		return error(response.err)
+	}
 	return json.decode(Contract, response.data) or {}
 }
